@@ -1,0 +1,19 @@
+<?php
+/**
+* 
+*/
+
+# No direct access
+defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
+
+# Get Report Page Address
+$reportPage = new ARV\Services\Dashboard\MenuPages\Viewer\Page();
+?>
+<p>ARV Plugin has been installed successfuly</p>
+<p>Visit ARV Web site for more informartion to know more about how ARV Plugin work</p>
+<br>
+<p>Start <a href="<?php echo $reportPage->getUrl(); ?>">here</a></p>
+<br>
+<p>Thank you for using ARV Plugin</p>
+<br>
+<p>XPTRDEV Team!</p>
