@@ -372,11 +372,46 @@ class ViewerModel extends PluginModel {
 	/**
 	* put your comment there...
 	* 
+	* @param mixed $hash
+	*/
+	protected function findFileName($hash) {
+		# Initiaize
+		$displayNames = $this->getReportFiles();
+		# Search for file hash and return display name
+		return $displayNames[$hash];
+	}
+
+	/**
+	* put your comment there...
+	* 
 	*/
 	public function generateRID() {
 		# Generate new Report Id
 		# Set as current report id
 		return $this->setReportId(uniqid(md5('arv' . NONCE_KEY . NONCE_SALT), true));
+	}
+
+	/**
+	* put your comment there...
+	* 
+	*/
+	public function getActiveReportFileHash() {
+		# Return report file is previously saved or 
+		# use default file
+		return  $this->getReportFileHash() ? 
+						$this->getReportFileHash() :
+						$this->defaultReportFileHash;
+	}
+
+	/**
+	* put your comment there...
+	* 
+	*/
+	public function getActiveReportFileName() {
+		# Get Active report file hash
+		$activeFileHash = $this->getActiveReportFileHash();
+		# Get name from hash
+		return $this->findFileName($activeFileHash);
 	}
 
 	/**
@@ -492,12 +527,7 @@ class ViewerModel extends PluginModel {
 		# Initialize
 		$pathToReportsDirectory = str_replace(DIRECTORY_SEPARATOR , '/', $this->getReportsDirectory());
 		$reportDirectory = $this->getReportId();
-		$currentFileHash = $this->getReportFileHash();
-		# IUse current report file hash or use default if no 
-		# hash is set yet
-		if (!$currentFileHash) {
-			$currentFileHash = $this->defaultReportFileHash;
-		}
+		$currentFileHash = $this->getActiveReportFileHash();
 		# Get URL to document file.
 		$documentUrl = home_url("{$pathToReportsDirectory}/{$reportDirectory}/{$currentFileHash}.{$this->awstatsFileExtension}");
 		# Returns

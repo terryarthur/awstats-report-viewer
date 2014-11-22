@@ -9,19 +9,22 @@ defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
 # Getting model
 $model =& $this->result();
 $router =& $this->router();
+$activeReportFile = $model->getActiveReportFileName();
 ?>
 <style type="text/css">
 	div#arv-report-viewer-toolbox {margin-top: 13px;}
-	div#arv-report-viewer-report-files-list {float: right; width: 218px;}
+	div#arv-report-viewer-report-files-list {float: right; width: 218px; font-size: 17px;right: 16px; position: relative;}
+	div#arv-report-viewer-report-files-list > ul {margin: 0;}
 	div#arv-report-viewer-report-screen {margin-right: 253px;margin-top: 19px;height: 800px;}
 	div#arv-report-viewer-report-screen iframe {width: 100%;height: 100%;}
 	#update-report {margin-right: 20px;}
+	#arv-report-viewer-report-files-list .active-file {color: black; font-size: 18px;}
 </style>
 <div id="arv-report-viewer-toolbox">
 	<form method="get">
-		<input id="update-report" type="submit" name="arvaction" value="Update" />
-		<input id="regenerate-report" type="submit" name="arvaction" value="Regenerate" />
-		<input id="delete-report" type="submit" name="arvaction" value="Delete" />
+		<input id="update-report" type="submit" name="arvaction" value="Update" title="Update AWStats report statistics" />
+		<input id="regenerate-report" type="submit" name="arvaction" value="Regenerate" title="Delete and Create report again with different folder unique id. It would also update report statistics." />
+		<input id="delete-report" type="submit" name="arvaction" value="Delete" title="Delete report directory with all files inside." />
 <?php foreach ($router->getRouteParams() as $name => $value) : ?>
 		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endforeach; ?>
@@ -31,7 +34,7 @@ $router =& $this->router();
 	<div id="arv-report-viewer-report-files-list">
 		<ul>
 <?php foreach($model->getReportFilesURL() as $url => $displayName) : ?>
-			<li><a href="<?php echo $url ?>"><?php echo $displayName ?></a></li>
+			<li><a class="arv-report-file-<?php echo $displayName; ?> <?php if ($activeReportFile == $displayName) echo 'active-file'; ?>" href="<?php echo $url ?>"><?php echo $displayName ?></a></li>
 <?php endforeach; ?>
 		</ul>
 	</div>
