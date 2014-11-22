@@ -1,11 +1,11 @@
 <?php
 /**
 * Plugin Name: AWStats Report Viewer
-* Plugin URI: http://arvwpp.xptrdev.com
+* Plugin URI: http://wp-arv.xptrdev.com
 * Author: AHMeD SAiD
 * Author URI: http://xptrdev.com
 * Version: 0.5
-* Description: Viewing AWStats report through Wordpress Dashboard page
+* Description: View CPanel's AWStats report via Wordpress Dashboard page.
 * License: GPL2
 */
 
