@@ -110,18 +110,19 @@ class InstallerController extends Controller {
 		$installerModel->setInstallationParametersForm($installationForm);
 		# Validate install parameters
 		if ($installationForm->validate()) {
-			# Save AWStats installation parameters at report Viewer Model
-			$reportModel =& $this->getModel('Viewer', 'Report');
-			$reportModel->setAWStatsParameters(
-				$installationForm->getAWStatsScriptPath()->getValue(),
-				$installationForm->getBuildStaticPath()->getValue(),
-				$installationForm->getConfigFilePath()->getValue(),
-				$installationForm->getIconsDirPath()->getValue()
-			);
-			# Create/Build AWStats report for the first time
-			
-			# Mark as installed / Store Database version at installer model
-			$installerModel->done();
+			# Create Report holder directory
+			$installerModel->createReportsDirectory()
+			# Create Report
+			->createReport()
+			# Write installation flags to database state
+			->done();
+			# If all installation steps passed successfully then start to create report
+			# for the first time
+			if (!$installerModel->isAllProcessed()) {
+				# Get back to installation form and show error messages
+				# produced by the instllation model
+				$this->redirect($route->routeAction());				
+			}
 		}
 		else {
 			# Go to index action, display form errors, allow

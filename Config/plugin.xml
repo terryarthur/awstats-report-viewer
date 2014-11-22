@@ -67,7 +67,7 @@
 			<proxy typeName="View" namespace="WPPFW\MVC" class="WPPFW\Services\Dashboard\Menu\Proxy" frontClass="WPPFW\Plugin\MVCViewRequestInputFrontProxy">
 				<object class="MVCViewParams">
 					<param name="module" 			value="Report" />
-					<param name="controller" 	value="Report" />
+					<param name="controller" 	value="Viewer" />
 					<param name="view" 				value="Viewer" />
 				</object>
 			</proxy>

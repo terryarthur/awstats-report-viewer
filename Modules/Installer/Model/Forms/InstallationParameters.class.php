@@ -21,8 +21,10 @@ class InstallationParametersForm extends Forms\Form {
 		# Form name
 		parent::__construct('awstatsParams');
 		# Form fields
+		# Domain
+		$this->addChain(new Forms\Fields\FormStringField('domain'))
 		# AWStats script path
-		$this->addChain(new Forms\Fields\FormStringField('scriptPath'))
+		->addChain(new Forms\Fields\FormStringField('scriptPath'))
 		# Build static script path
 		->addChain(new Forms\Fields\FormStringField('buildStaticPath'))
 		# Config file path
@@ -53,6 +55,14 @@ class InstallationParametersForm extends Forms\Form {
 	*/
 	public function & getConfigFilePath() {
 		return $this->get('configFile');
+	}
+	
+	/**
+	* put your comment there...
+	* 
+	*/
+	public function & getDomain() {
+		return $this->get('domain');
 	}
 	
 	/**

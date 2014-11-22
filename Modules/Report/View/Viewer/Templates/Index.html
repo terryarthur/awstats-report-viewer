@@ -1,1 +1,41 @@
-XX
+<?php
+/**
+* 	
+*/
+
+# No direct access
+defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
+	
+# Getting model
+$model =& $this->result();
+$router =& $this->router();
+?>
+<style type="text/css">
+	div#arv-report-viewer-toolbox {margin-top: 13px;}
+	div#arv-report-viewer-report-files-list {float: right; width: 218px;}
+	div#arv-report-viewer-report-screen {margin-right: 253px;margin-top: 19px;height: 800px;}
+	div#arv-report-viewer-report-screen iframe {width: 100%;height: 100%;}
+	#update-report {margin-right: 20px;}
+</style>
+<div id="arv-report-viewer-toolbox">
+	<form method="get">
+		<input id="update-report" type="submit" name="arvaction" value="Update" />
+		<input id="regenerate-report" type="submit" name="arvaction" value="Regenerate" />
+		<input id="delete-report" type="submit" name="arvaction" value="Delete" />
+<?php foreach ($router->getRouteParams() as $name => $value) : ?>
+		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
+<?php endforeach; ?>
+	</form>
+</div>
+<div id="arv-report-viewer-report">
+	<div id="arv-report-viewer-report-files-list">
+		<ul>
+<?php foreach($model->getReportFilesURL() as $url => $displayName) : ?>
+			<li><a href="<?php echo $url ?>"><?php echo $displayName ?></a></li>
+<?php endforeach; ?>
+		</ul>
+	</div>
+	<div id="arv-report-viewer-report-screen">
+		<iframe src="<?php echo $model->getReportFileDocumentURL() ?>"></iframe>
+	</div>
+</div>

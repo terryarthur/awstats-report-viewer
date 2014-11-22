@@ -8,7 +8,7 @@ defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
 	
 # Initialize
 $router =& $this->router();
-
+$installerModel =& $this->mvcServiceManager()->getModel();
 # Get forms
 $forms =& $this->result();
 
@@ -37,6 +37,14 @@ $installationform =& $forms->installationForm;
 </style>
 <!-- STYLESHEET FILE ENDD -->
 <div id="arv-instalation-page" class="arv-body">
+<?php if ($installerModel->hasErrors()) : ?>
+	<ul id="installations-errors">
+<?php foreach ($installerModel->getCleanErrors() as $errorMessage) : ?>
+		<li><?php echo $errorMessage; ?></li>
+<?php endforeach; ?>
+	</ul>
+<?php $installerModel->writeState(); # Re-write state as this is running too late! ?>
+<?php endif; ?>
 	<form id="arv-discover-awstats-params-tool" method="post">
 		<fieldset>
 			<strong>AWStats Parameters</strong>
@@ -70,6 +78,10 @@ $installationform =& $forms->installationForm;
 				This is the final AWStats parameters to be used for generating AWStats report. You can either fill it manually or use the form above for auto discovering those parameters.
 			</p>
 			<ul>
+				<li>
+					<label for="installs-domain" title="">Domain</label>
+					<input id="installs-domain" type="text" name="awstatsParams[domain]" value="<?php echo $installationform->getDomain()->getValue() ?>">
+				</li>
 				<li>
 					<label for="" title="">AWStats Script</label>
 					<input type="text" name="awstatsParams[scriptPath]" value="<?php echo $installationform->getAWStatsScriptPath()->getValue(); ?>">
