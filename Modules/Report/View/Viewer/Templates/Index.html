@@ -12,6 +12,10 @@ $router =& $this->router();
 $activeReportFile = $model->getActiveReportFileName();
 ?>
 <style type="text/css">
+	ul#installations-errors {color: red;background-color: white;height: 68px;overflow: auto;padding: 10px 0px 0 30px;width: 96%;}
+	ul#installations-errors li {list-style-type: square;}
+</style>
+<style type="text/css">
 	div#arv-report-viewer-toolbox {margin-top: 13px;}
 	div#arv-report-viewer-report-files-list {float: right; width: 218px; font-size: 17px;right: 16px; position: relative;}
 	div#arv-report-viewer-report-files-list > ul {margin: 0;}
@@ -21,6 +25,14 @@ $activeReportFile = $model->getActiveReportFileName();
 	#arv-report-viewer-report-files-list .active-file {color: black; font-size: 18px;}
 </style>
 <div id="arv-report-viewer-toolbox">
+<?php if ($model->hasErrors()) : ?>
+	<ul id="installations-errors">
+<?php foreach ($model->getCleanErrors() as $errorMessage) : ?>
+		<li><?php echo $errorMessage; ?></li>
+<?php endforeach; ?>
+	</ul>
+<?php $model->writeState(); # Re-write state as this is running too late! ?>
+<?php endif; ?>
 	<form method="get">
 		<input id="update-report" type="submit" name="arvaction" value="Update" title="Update AWStats report statistics" />
 		<input id="regenerate-report" type="submit" name="arvaction" value="Regenerate" title="Delete and Create report again with different folder unique id. It would also update report statistics." />
