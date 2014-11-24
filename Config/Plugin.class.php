@@ -1,21 +1,26 @@
 <?php
 /**
-* 
+* Plugin.class.php
+* @author AHMeD SAiD
 */
 
+# Define namespace
 namespace ARV\Config;
 
 # Imports
 use WPPFW\Plugin\PluginConfig;
 
 /**
+* Plugin configuration class
 * 
+* @author AHMeD SAiD
 */
 class Plugin extends PluginConfig {
 	
 	/**
-	* put your comment there...
+	* Load Plugin configuration from configuration XML file
 	* 
+	* @return void
 	*/
 	public function __construct() {
 		# Load plugin.xml file relative to this class

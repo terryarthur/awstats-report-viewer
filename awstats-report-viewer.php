@@ -12,6 +12,9 @@
 # ARV Namespace
 namespace ARV;
 
+# Initialize third-party libs and ARV autoloaders
+require 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
 # Constants
 const NO_DIRECT_ACCESS_MESSAGE = 'Access Denied';
 
@@ -21,24 +24,28 @@ use WPPFW\Plugin\PluginBase;
 # Installer Module that will get all the other modules loaded
 use ARV\Services\InstallerModule;
 
-# Class Autoloader
-require 'vendor/autoload.php';
-
 /**
+* ARV Plugin Bootstrap Class.
 * 
+* The class is to load services modules that start up
+* Wordpress binding process. Those modules then get triggered once
+* Wordpress binded hook is triggered
+* 
+* @author AHMeD SAiD 
 */
 class Plugin extends PluginBase {
 	
 	/**
-	* put your comment there...
+	* Holds ARV Plugin instance
 	* 
-	* @var mixed
+	* @var Plugin
 	*/
 	protected static $instance;
 	
 	/**
-	* put your comment there...
+	* Bootstrap ARV Plugin
 	* 
+	* return void
 	*/
 	protected function __construct() {
 		# Plugin base
@@ -52,8 +59,12 @@ class Plugin extends PluginBase {
 	}
 
 	/**
-	* put your comment there...
+	* Run ARV Plugin if not alreayd running
 	* 
+	* This methos is to construct a new ARV\Plugin instance if not already
+	* instantiated.
+	* 
+	* @return PLugin
 	*/
 	public static function run() {
 		# Create if not yet created
@@ -66,5 +77,5 @@ class Plugin extends PluginBase {
 
 }
 
-# Run
+# Run The Plugin
 Plugin::run();

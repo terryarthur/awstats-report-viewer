@@ -21,8 +21,23 @@ use ARV\Modules\Installer\Model\InstallerModel;
 class InstallerController extends Controller {
 
 	/**
-	* put your comment there...
+	* Discover AWStats Parameters action.
 	* 
+	* The action is initially check whether if the awstats parameters has been
+	* discovered yet. If not yet discovered or has been reseted it would automatically discover
+	* awstats parameters and save it at model state.
+	* 
+	* It also serves the discover request taken by user through
+	* discvoer form.
+	* 
+	* Discover Parameters is an array holds the data as following:
+	* - scriptPath => PATH TO AWStats program
+	* - domain => DOMAIN NAME used to discover AWStats configuration file name
+	* - systemUser => Host System User used for discovering paths
+	* 
+	* @param array Discover parameters
+	* 
+	* @return void
 	*/
 	protected function indexAction() {
 		# Initialize
@@ -90,8 +105,19 @@ class InstallerController extends Controller {
 	}
 
 	/**
-	* put your comment there...
+	* Take awstats installation parameters, validate, save them
+	* ,finalize the installation process and finally display the success
+	* screen.
 	* 
+	* AWStats installatyion parameters:
+	* domain => Domain name to create awstats report for
+	* scriptPath => Path to awstats program
+	* buildStaticPath => Path to awstats build static script
+	* configFile => Path to awstats config file for the specified domain
+	* iconsDir => Path to awstats src icons directory
+	* 
+	* @param array AWStats installation parameters 
+	* @return void
 	*/
 	protected function installAction() {
 		# Initialize
@@ -134,8 +160,16 @@ class InstallerController extends Controller {
 	}
 
 	/**
-	* put your comment there...
+	* Reset both discover parameters and Installation parameters
+	* to defaults that comes with ARV installer.
 	* 
+	* The action is to remove all saved model state for both
+	* discvoer and installation parameters and redirect back to index action
+	* therefore detecting that no parameters has been discovered yet causing 
+	* index action to set discover parametrs from internal default values as defined 
+	* in the model and therefore discover installation parameters.
+	* 
+	* @return void
 	*/
 	protected function resetAction() {
 		# Initialize

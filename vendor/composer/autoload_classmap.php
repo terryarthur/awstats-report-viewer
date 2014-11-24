@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'ARV\\Config\\Plugin' => $baseDir . '/Config/Plugin.php',
+    'ARV\\Config\\Plugin' => $baseDir . '/Config/Plugin.class.php',
     'ARV\\Factory' => $baseDir . '/Factory/Factory.class.php',
     'ARV\\Factory\\WordpressOptions' => $baseDir . '/Factory/WordpressOptions.class.php',
     'ARV\\Modules\\Installer\\Controller\\Installer\\InstallerController' => $baseDir . '/Modules/Installer/Controller/Installer/Controller.class.php',

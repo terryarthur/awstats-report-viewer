@@ -1,98 +1,115 @@
 <?php
 /**
-* 
+* Installer.class.php
 */
 
+# Define namespace
 namespace ARV\Modules\Installer\Model;
 
 # Model base
 use WPPFW\MVC\Model\PluginModel;
 
 /**
+* Installer model class holds all internal functionality
+* required by ARV installer process.
 * 
+* - Created AWStats reports(s) holder directory
+* - Writes a database version number to wordpress options table
+* - Discover awstats installatio parameters
+* - Passthrough installation parameters to Viewer model
+* - Create report for first time when installation success
+* - Holds the deafult discover parameters
+* 
+* @author AHMeD SAiD
 */
 class InstallerModel extends PluginModel {
 
 	/**
-	* 
+	* Used to state that the installer has passed CREATE REPORT for the first time.
 	*/
 	const OPERATION_CREATE_REPORT = 2;
 		
 	/**
-	* 
+	* Used to state that the Report(s) holder directory step is passed
 	*/
 	const OPERATION_CREATE_REPORTS_DIRECTORY = 1;
 	
 	/**
-	* 
+	* State that there is no success operations never passed by the installer
 	*/
 	const OPERATION_NONE = 0;
 
 	/**
-	* 
+	* State that all operations has been passed and also the installation state/flags
+	* has beenm witen to database. This is the last operation 
 	*/
 	const OPERATION_WRITE_INSTALLATION_FLAGS = 3;
 	
 	/**
-	* put your comment there...
+	* holds database version as loaded from Plugin config file
+	* see $this->initialize()
 	* 
-	* @var mixed
+	* @var string
 	*/
 	private $dbVersion;
 	
 	/**
-	* put your comment there...
+	* Path to AWStats discover parameter used for discovering installation params
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $discoverAWStatsScript;
 	
 	/**
-	* put your comment there...
+	* Discover Domain name used for discover installatioln params
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $discoverDomain;
 
 	/**
-	* put your comment there...
+	* System user name used to discover installation params
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $discoverSystemUser;
 
 	/**
-	* put your comment there...
+	* Index file name to copy from ARV Source code to reports and report
+	* directory. The file is to prevent listing report folder and report files from
+	* the browser. Report directory name and report files names should
+	* be know only tro admins
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $indexFileName = 'index.php';
 
 	/**
-	* put your comment there...
+	* Path to AWStats program to be used for generating report
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $installsParamsAWStatsPath;
 	
 	/**
-	* put your comment there...
+	* Path to AWStats build static tool script used
+	* for creating static report
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $installsParamsBuildStaticScript;
 
 	/**
-	* put your comment there...
+	* Path to awstats configugration file path for the specified Domain
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $installsParamsConfigFile;
 	
 	/**
-	* put your comment there...
+	* AWStats domain
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $installsParamsDomain;
 	
@@ -104,58 +121,81 @@ class InstallerModel extends PluginModel {
 	protected $installsParamsIconsDirectory;
 
 	/**
-	* put your comment there...
+	* Installer state object used for evaludating
+	* installation state (e.g installed, not installed, etc...)
 	* 
-	* @var mixed
+	* @var InstallState
 	*/
 	private $installState;
 	
 	/**
-	* put your comment there...
+	* Currently installed version number
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $installedVersion = '';
 	
 	/**
-	* put your comment there...
+	* Latest successed operations process by the model
+	* It can be one of the operations constants defined in the class
 	* 
-	* @var mixed
+	* OPERATION_NONE
+	* OPERATION_CREATE_REPORTS_DIRECTORY
+	* OPERATION_CREATE_REPORT
+	* OPERATION_WRITE_INSTALLATION_FLAGS 
+	* 
+	* @var OPERATION_[OPERATION]
 	*/
 	protected $lastOperation = self::OPERATION_NONE;
 	
 	/**
-	* put your comment there...
+	* ARV Plugin relative path to index file used
+	* for preventing listing report directory files 
+	* using thr browser. See $this->initialize()
 	* 
-	* @var mixed
+	* @var string
 	*/
 	protected $noListIndexFileRelPath;
 	
 	/**
-	* put your comment there...
+	* Wordpress relative path to Reports directory
 	* 
-	* @var mixed
+	* @see $this->initialize()
+	* 
+	* @var string
 	*/
 	protected $reportsDirectoryPath;
 	
 	/**
-	* put your comment there...
+	* State that the model state is being reseted.
 	* 
-	* @var mixed
+	* This is a Flag to be used by the controller
+	* to fill discover form with the default parameters, therefore
+	* causes installation parameters to be discovered.
+	* 
+	* @var boolean
 	*/
 	protected $reset = true;
 	
 	/**
-	* put your comment there...
+	* ARV Plugin configuration object
 	* 
-	* @var mixed
+	* The structure of this array is as defined
+	* in the configuration XML file inside the <parameters> tag
+	* 
+	* So that accessing dbVersion number would be $this->pluginsConfig['parameters']['dbVersion']
+	* 
+	* @var Array
 	*/
 	private $pluginConfig;
 
 	/**
-	* put your comment there...
+	* Clear Model state.
 	* 
-	* @return InstallerModel
+	* The method is to clear both discover and installation parameters.
+	* It would also set $this->reset flag tgo TRUE, stat5e that the model is in reset state
+	* 
+	* @return InstallerModel Chaining, returning $this
 	*/
 	public function clearState() {
 		# Clear state
@@ -173,8 +213,13 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* Create AWStats report for the first time.
 	* 
+	* The method is to set Report Viewer model with 
+	* the insatallation parameters and request report creation for the first
+	* time.
+	* 
+	* @return InstallerModel Chaining, returning $this
 	*/
 	public function & createReport() {
 		# Initialize
@@ -208,8 +253,18 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* Create reports(s) holder directory.
 	* 
+	* The method is to create the folder that would hold
+	* the report folder inside.
+	* 
+	* It would also complain by the following errors:
+	* 
+	* - Cannot create reports directoy as there is no permissions
+	* - Couldn't create reports directory
+	* - Couldn't copy index file.
+	* 
+	* @return InstallerModel Chaining, returning $this
 	*/
 	public function createReportsDirectory() {
 		# Initialize
@@ -252,10 +307,11 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* Use Model discover parameters for discovering awstats installation paramaters,
+	* fill the passed form with the discovred values 
 	* 
-	* @param Forms\InstallationParametersForm $form
-	* @return {Forms\InstallationParametersForm|InstallerModel}
+	* @param Forms\InstallationParametersForm Installation for to fill with the discovered data.
+	* @return InstallerModel Chaining, returning $this
 	*/
 	public function discoverInstallationParameters(Forms\InstallationParametersForm & $form) {
 		# Initiaolize
@@ -283,8 +339,16 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* Finalize the installation process by writing installation
+	* flags to database.
 	* 
+	* This method should be called only when all operation has been processed
+	* It won't effect calling this method if not all operations passed.
+	* 
+	* The method sets $this->installedVersion to equal $this->dbVersion
+	* therefore force InstallerState Model to detect plugin installed.
+	* 
+	* @return Installer Chaining, returning $this
 	*/
 	public function & done() {
 		# Write database version / Mark as insalled
@@ -300,8 +364,11 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* State that the model is out of reset state.
 	* 
+	* Its simply sets $this->reset = false
+	* 
+	* @return Installer Chaining, returning $this
 	*/
 	public function enterReadyState() {
 		# Unreset
@@ -311,95 +378,116 @@ class InstallerModel extends PluginModel {
 	}
 
 	/**
-	* put your comment there...
+	* Get last successfuly executed operation.
 	* 
+	* The method returns last successfuly executed operation that is 
+	* represent the current model operation
+	* 
+	* @return string Returns one of the Installer::OPERATION_[OPERAATION] constants
 	*/
 	public function getCurrentOperation() {
 		return $this->lastOperation;
 	}
 
 	/**
-	* put your comment there...
+	* Get Plugin database version as defined in
+	* Plugin configuratrion file
 	* 
+	* @return string Plugin database version
 	*/
 	public function getDBVersion() {
 		return $this->dbVersion;
 	}
 	
 	/**
-	* put your comment there...
+	* Get default (defined by ARV Plugin) AWStats program path
 	* 
+	* @return string Path to awstats path
 	*/
 	public function getDefaultDiscoverAWStatsScriptPath() {
 		return '/usr/local/cpanel/3rdparty/bin/awstats.pl';
 	}
 
 	/**
-	* put your comment there...
+	* Get Current server Domain.
 	* 
+	* It uses $_SERVER['HTTP_HOST'] as current Domain
+	* 
+	* @return string Returns $_SERVER['HTTP_HOST'] 
 	*/
 	public function getDefaultDiscoverDomain() {
 		return $_SERVER['HTTP_HOST'];
 	}
 
 	/**
-	* put your comment there...
+	* Get Default discover parameter system user.
 	* 
+	* The method is using current process user name as
+	* current system user name.
+	* 
+	* @return string Current PHP process user
 	*/
 	public function getDefaultDiscoverSystemUser() {
 		return get_current_user();
 	}
 
 	/**
-	* put your comment there...
+	* Get Path to AWStats script discover parameter
 	* 
+	* @return string Path to AWStats prog path
 	*/
 	public function getDiscoverAWStatsScriptPath() {
 		return $this->discoverAWStatsScript;
 	}
 
 	/**
-	* put your comment there...
+	* Get Domain name discover parameter
 	* 
+	* @return string Domain name
 	*/
 	public function getDiscoverDomain() {
 		return $this->discoverDomain;
 	}
 
 	/**
-	* put your comment there...
+	* Get System user discover parameter
 	* 
+	* @return string System user discover parameter
 	*/
 	public function getDiscoverSystemUser() {
 		return $this->discoverSystemUser;
 	}
 
 	/**
-	* put your comment there...
+	* Get index file name used for disallowing listing
+	* reports and report directories
 	* 
+	* @return string Index file name, currently its hard-coded
 	*/
 	public function getIndexFileName() {
 		return $this->indexFileName;
 	}
 	
 	/**
-	* put your comment there...
+	* Get currently installed version number
 	* 
+	* @return string Installed Version number
 	*/
 	public function getInstalledVersion() {
 		return $this->installedVersion;
 	}
 	
 	/**
-	* put your comment there...
+	* Get path to AWStats prog installation parameter
 	* 
+	* @return string Absolute path to AWStats prog
 	*/
 	public function getInstallsParamsAWstatsScriptPath() {
 		return $this->installsParamsAWStatsPath;
 	}
 	
 	/**
-	* put your comment there...
+	* 
 	* 
 	*/
 	public function getInstallsParamsBuildStaticScript() {

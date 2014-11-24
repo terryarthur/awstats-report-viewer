@@ -1,8 +1,9 @@
 <?php
 /**
-* 
+* WordpressOptions.class.php
 */
 
+# Define namespace
 namespace ARV\Factory;
 
 # Imports
@@ -12,15 +13,18 @@ use WPPFW\Obj;
 use WPPFW\Database\Wordpress;
 
 /**
+* Factoring Wordpress Database Options Table
 * 
+* @author AHMeD SAiD 
 */
 class WordpressOptions {
 
 	/**
-	* put your comment there...
+	* Creating new WPPFW\Database\Wordpress\WordpressOptions object
+	* configued for ARV Plugin
 	* 
 	* @param Obj\Factory $factory
-	* @return Obj\Factory
+	* @return Wordpress\WordpressOptions
 	*/
 	public function getInstance(Obj\Factory & $factory) {
 		# Getting Plugin instance.
