@@ -13,7 +13,6 @@ use WPPFW\Plugin\PluginBase;
 
 # Menu Page service Framework
 use WPPFW\Services\Dashboard\Menu\MenuService;
-use WPPFW\Services\Dashboard\Ajax\AjaxService;
 
 # Installer model
 use ARV\Modules\Installer\Model\InstallState;
@@ -47,11 +46,14 @@ class InstallerModule extends ServiceModule {
 		# Initialize
 		$installationState = new InstallState($plugin);
 		# Always run installer module
-		//$services[] = new AjaxService($plugin, array());
 		# Run Dashboard module only if installed
 		if ($installationState->isInstalled()) { # Run installed services
-			# Run Dashboard Module
-			$services[] = new DashboardModule($plugin);
+			# create Dashboard module
+			$dashboardModule = new DashboardModule($plugin);
+			# Add to factory
+			$plugin->factory()->setInstance($dashboardModule);
+			# Run by current module
+			$services[] = $dashboardModule;
 		}
 		else {
 			# Installer Menu page

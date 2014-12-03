@@ -42,7 +42,7 @@ class ViewerController extends Controller {
 		# Go to index
 		$this->redirect($router->routeAction());
 	}
-	
+
 	/**
 	* put your comment there...
 	* 

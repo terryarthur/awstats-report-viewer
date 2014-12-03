@@ -1,0 +1,1 @@
+delete from arv_options where option_name IN('arv-model-state_installermodel', 'arv-model-state_viewermodel');

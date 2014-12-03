@@ -72,13 +72,14 @@
 				</object>
 			</proxy>
 		</service>
-		<service serviceObjectClass="Dashboard\Ajax\AccessPoint"
-						 serviceFront="Dashboard"
-						 routerClass="WPPFW\Plugin\ServiceObjectRouter">
+		<service serviceObjectClass="Dashboard\Services\Ajax"
+						 serviceFront="Service"
+						 routerClass="WPPFW\Plugin\ServiceObjectRouter"
+						 homeProxy="WPPFW\Services\Dashboard\Ajax\Proxy">
 			<proxy typeName="Service" namespace="WPPFW\MVC" class="WPPFW\Services\Dashboard\Ajax\Proxy" frontClass="WPPFW\Plugin\MVCRequestInputFrontProxy">
 				<object class="MVCParams">
 					<param name="module" 			value="Report" />
-					<param name="controller" 	value="ReportService" />
+					<param name="controller" 	value="ViewerService" />
 				</object>
 			</proxy>
 		</service>
@@ -94,11 +95,6 @@
 					<param name="view" 				value="Installer" />
 				</object>
 			</proxy>
-		</service>
-		<service serviceObjectClass="Installer\Ajax\AccessPoint"
-						 serviceFront="Installer"
-						 routerClass="WPPFW\Plugin\ServiceObjectRouter">
-			<proxy typeName="Service" namespace="WPPFW\MVC" class="WPPFW\Services\Dashboard\Ajax\Proxy" frontClass="WPPFW\Plugin\MVCRequestInputFrontProxy" />
 		</service>
 
 		<models>

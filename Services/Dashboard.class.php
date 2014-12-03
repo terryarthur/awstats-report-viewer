@@ -23,6 +23,16 @@ class DashboardModule extends ServiceModule {
 	/**
 	* 
 	*/
+	const VIEWER_AJAX_SERVICE_KEY = 1;
+
+	/**
+	* 
+	*/
+	const VIEWER_AJAX_SERVICE_OBJECT_KEY = 1;
+
+	/**
+	* 
+	*/
 	const VIEWER_SERVICE_KEY = 0;
 
 	/**
@@ -41,6 +51,10 @@ class DashboardModule extends ServiceModule {
 		$services[self::VIEWER_SERVICE_KEY] = new MenuService($plugin, array(
 			self::VIEWER_SERVICE_OBJECT_KEY => new Dashboard\MenuPages\Viewer\Page()
 		));
+		# Ajax services
+		$services[self::VIEWER_AJAX_SERVICE_KEY] = new AjaxService($plugin, array(
+			self::VIEWER_AJAX_SERVICE_OBJECT_KEY => new Dashboard\Services\Ajax()
+		));
 	}
 	
 	/**
@@ -49,6 +63,14 @@ class DashboardModule extends ServiceModule {
 	*/
 	public function viewer() {
 		return $this->getServiceObject(self::VIEWER_SERVICE_KEY, self::VIEWER_SERVICE_OBJECT_KEY);
+	}
+
+	/**
+	* put your comment there...
+	* 
+	*/
+	public function viewerService() {
+		return $this->getServiceObject(self::VIEWER_AJAX_SERVICE_KEY, self::VIEWER_AJAX_SERVICE_OBJECT_KEY);
 	}
 
 }

@@ -53,7 +53,7 @@ class Plugin extends PluginBase {
 		# Only admin side is used in this Plugin
 		if (is_admin()) {
 			# Dashboad Service Module
-			$installerModule = new  Services\InstallerModule($this);
+			$installerModule = new Services\InstallerModule($this);
 			$installerModule->start();
 		}		
 	}

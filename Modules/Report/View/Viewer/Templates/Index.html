@@ -9,6 +9,7 @@ defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
 # Getting model
 $model =& $this->result();
 $router =& $this->router();
+$serviceRouter =& $router->findRouter('Dashboard', 'viewerService');
 $activeReportFile = $model->getActiveReportFileName();
 ?>
 <style type="text/css">
@@ -40,6 +41,14 @@ $activeReportFile = $model->getActiveReportFileName();
 <?php foreach ($router->getRouteParams() as $name => $value) : ?>
 		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endforeach; ?>
+	</form>
+	<!-- Download Form -->
+	<form action="<?php echo $serviceRouter->getActionUrl(); ?>">
+<?php foreach ($serviceRouter->getRouteParams() as $name => $value) : ?>
+		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
+<?php endforeach; ?>
+		<input type="hidden" name="arvformat" value="FileDownloader" />
+		<input id="download-report" type="submit" name="arvaction" value="Download" title="Download report folder as zip package" />
 	</form>
 </div>
 <div id="arv-report-viewer-report">
