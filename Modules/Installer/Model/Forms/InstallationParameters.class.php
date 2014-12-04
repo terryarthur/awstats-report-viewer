@@ -11,7 +11,7 @@ use WPPFW\Forms;
 /**
 * 
 */
-class InstallationParametersForm extends Forms\Form {
+class InstallationParametersForm extends Forms\SecureForm {
 	
 	/**
 	* 
@@ -19,7 +19,7 @@ class InstallationParametersForm extends Forms\Form {
 	*/
 	public function __construct() {
 		# Form name
-		parent::__construct('awstatsParams');
+		parent::__construct('awstatsParams', 'stoken');
 		# Form fields
 		# Domain
 		$this->addChain(new Forms\Fields\FormStringField('domain'))

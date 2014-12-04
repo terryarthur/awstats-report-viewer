@@ -9,6 +9,7 @@ defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
 # Getting model
 $model =& $this->result();
 $router =& $this->router();
+$reportForm =& $model->getReportForm();
 $activeReportFile = $model->getActiveReportFileName();
 ?>
 <style type="text/css">
@@ -40,6 +41,7 @@ $activeReportFile = $model->getActiveReportFileName();
 <?php foreach ($router->getRouteParams() as $name => $value) : ?>
 		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endforeach; ?>
+		<input type="hidden" name="reportForm[<?php echo $reportForm->getSecurityTokenName() ?>]" value="<?php echo $reportForm->getSecurityToken()->getValue() ?>" />
 	</form>
 </div>
 <div id="arv-report-viewer-report">

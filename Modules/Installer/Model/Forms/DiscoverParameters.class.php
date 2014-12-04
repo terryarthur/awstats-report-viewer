@@ -11,7 +11,7 @@ use WPPFW\Forms;
 /**
 * 
 */
-class AWStatsDiscoverParametersForm extends Forms\Form {
+class AWStatsDiscoverParametersForm extends Forms\SecureForm {
 	
 	/**
 	* 
@@ -19,7 +19,7 @@ class AWStatsDiscoverParametersForm extends Forms\Form {
 	*/
 	public function __construct() {
 		# Form name
-		parent::__construct('discover');
+		parent::__construct('discover', 'stoken');
 		# AWStats Script path
 		$this->addChain(new Forms\Fields\FormStringField('scriptPath'))
 		# Domain Name

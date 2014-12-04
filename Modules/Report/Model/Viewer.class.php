@@ -102,6 +102,13 @@ class ViewerModel extends PluginModel {
 	* 
 	* @var mixed
 	*/
+	protected $reportForm;
+	
+	/**
+	* put your comment there...
+	* 
+	* @var mixed
+	*/
 	protected $reportId;
 	
 	/**
@@ -556,6 +563,14 @@ class ViewerModel extends PluginModel {
 	* put your comment there...
 	* 
 	*/
+	public function & getReportForm() {
+		return $this->reportForm;
+	}
+
+	/**
+	* put your comment there...
+	* 
+	*/
 	public function getReportId() {
 		return $this->reportId;
 	}
@@ -602,6 +617,15 @@ class ViewerModel extends PluginModel {
 	*/
 	public function hasReport() {
 		return $this->reportId ? true : false;
+	}
+
+	/**
+	* put your comment there...
+	* 
+	*/
+	protected function initialize() {
+		# Create report form
+		$this->reportForm = new Forms\ReportForm();
 	}
 
 	/**

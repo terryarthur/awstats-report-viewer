@@ -11,6 +11,7 @@ use WPPFW\MVC\Controller\Controller;
 # Installation form
 use ARV\Modules\Installer\Model\Forms\AWStatsDiscoverParametersForm;
 use ARV\Modules\Installer\Model\Forms\InstallationParametersForm;
+use ARV\Modules\Installer\Model\Forms\ResetParametersForm;
 
 # Models
 use ARV\Modules\Installer\Model\InstallerModel;
@@ -45,6 +46,7 @@ class InstallerController extends Controller {
 		$discoverInstallationParams = true;
 		$discoverForm = new AWStatsDiscoverParametersForm();
 		$installationForm = new InstallationParametersForm();
+		$resetForm = new ResetParametersForm();
 		/**
 		* put your comment there...
 		* 
@@ -53,6 +55,11 @@ class InstallerController extends Controller {
 		$installerModel =& $this->getModel();
 		# Initial discover or user submission discover
 		if (!$input->isPost()) {
+			# Re-new Form security tokens
+			$securityToken = $this->createSecurityToken();
+			$discoverForm->getSecurityToken()->setValue($securityToken);
+			$installationForm->getSecurityToken()->setValue($securityToken);
+			$resetForm->getSecurityToken()->setValue($securityToken);
 			# Set Model Discover parameters if not yet set
 			if (!$installerModel->isReady()) {
 				# Set default data
@@ -86,22 +93,33 @@ class InstallerController extends Controller {
 		else {
 			# Fill discover form
 			$discoverForm->setValue($input->post()->getArray());
-			# Validate discover form
-			if ($discoverInstallationParams = $discoverForm->validate()) {
-				# Set discover parameters through user form
-				$installerModel->setDiscoverParameters(
-					$discoverForm->getAWStatsScript()->getValue(),
-					$discoverForm->getDomain()->getValue(),
-					$discoverForm->getSystemUser()->getValue()
-				)
-				# Discover installation parameters
-				->discoverInstallationParameters($installationForm)
-				# Save discovered parameters @ model state
-				->setInstallationParametersForm($installationForm);
-			}			
+			# Check if authorized
+			if ($discoverForm->isAuthorized()) {
+				# Validate discover form
+				if ($discoverInstallationParams = $discoverForm->validate()) {
+					# Set discover parameters through user form
+					$installerModel->setDiscoverParameters(
+						$discoverForm->getAWStatsScript()->getValue(),
+						$discoverForm->getDomain()->getValue(),
+						$discoverForm->getSystemUser()->getValue()
+					)
+					# Discover installation parameters
+					->discoverInstallationParameters($installationForm)
+					# Save discovered parameters @ model state
+					->setInstallationParametersForm($installationForm);
+				}
+			}
+			else {
+				 # Token not authorized
+				$installerModel->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+			}
 		}
 		# Pass Discover form to view
-		return (object) array('discoverForm' => $discoverForm, 'installationForm' => $installationForm);
+		return (object) array(
+			'discoverForm' => $discoverForm, 
+			'installationForm' => $installationForm,
+			'resetForm' => $resetForm
+		);
 	}
 
 	/**
@@ -134,23 +152,33 @@ class InstallerController extends Controller {
 		$installationForm->setValue($input->post()->getArray());
 		# Save installation parameters at model state
 		$installerModel->setInstallationParametersForm($installationForm);
-		# Validate install parameters
-		if ($installationForm->validate()) {
-			# Create Report holder directory
-			$installerModel->createReportsDirectory()
-			# Create Report
-			->createReport()
-			# Write installation flags to database state
-			->done();
-			# If all installation steps passed successfully then start to create report
-			# for the first time
-			if (!$installerModel->isAllProcessed()) {
-				# Get back to installation form and show error messages
-				# produced by the instllation model
-				$this->redirect($route->routeAction());				
+		# Check if authorized
+		if ($installationForm->isAuthorized()) {
+			# Validate install parameters
+			if ($installationForm->validate()) {
+				# Create Report holder directory
+				$installerModel->createReportsDirectory()
+				# Create Report
+				->createReport()
+				# Write installation flags to database state
+				->done();
+				# If all installation steps passed successfully then start to create report
+				# for the first time
+				if (!$installerModel->isAllProcessed()) {
+					# Get back to installation form and show error messages
+					# produced by the instllation model
+					$this->redirect($route->routeAction());				
+				}
+			}
+			else {
+				# Go to index action, display form errors, allow
+				# user to repeat.
+				$this->redirect($route->routeAction());
 			}
 		}
 		else {
+			# Not authorized
+			$installerModel->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
 			# Go to index action, display form errors, allow
 			# user to repeat.
 			$this->redirect($route->routeAction());
@@ -175,8 +203,19 @@ class InstallerController extends Controller {
 		# Initialize
 		$model =& $this->getModel();
 		$router =& $this->router();
-		# Reset model state.
-		$model->clearState();
+		$input =& $this->input();
+		$resetForm = new ResetParametersForm();
+		# Fill reset form 
+		$resetForm->setValue($input->post()->getArray());
+		# Check if authorized
+		if ($resetForm->isAuthorized()) {
+			# Reset model state.
+			$model->clearState();
+		}
+		else {
+			# Report error
+			$model->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+		}
 		# Discover installation parameters by using default disocoverig (recycle)
 		$this->redirect($router->routeAction());
 	}

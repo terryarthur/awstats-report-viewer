@@ -21,10 +21,20 @@ class ViewerController extends Controller {
 		# Initialize
 		$model =& $this->getModel();
 		$router =& $this->router();
-		# Generate new report Id
-		$model->generateRID()
-		# Create new report
-		->createReport();
+		$input =& $this->input();
+		$reportForm =& $model->getReportForm();
+		# Check if authorized
+		$reportForm->setValue($input->get()->getArray());
+		if ($reportForm->isAuthorized()) {
+			# Generate new report Id
+			$model->generateRID()
+			# Create new report
+			->createReport();
+		}
+		else {
+			# Not authorized
+			$model->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+		}
 		# Redirect to index, display report
 		$this->redirect($router->routeAction());
 	}
@@ -37,8 +47,18 @@ class ViewerController extends Controller {
 		# Initialize
 		$model =& $this->getModel();
 		$router =& $this->router();
-		# Delete report
-		$model->deleteReport();
+		$input =& $this->input();
+		$reportForm =& $model->getReportForm();
+		# Check if authorized
+		$reportForm->setValue($input->get()->getArray());
+		if ($reportForm->isAuthorized()) {
+			# Delete report
+			$model->deleteReport();
+		}
+		else {
+			# Not authorized
+			$model->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+		}
 		# Go to index
 		$this->redirect($router->routeAction());
 	}
@@ -51,6 +71,9 @@ class ViewerController extends Controller {
 		# Initialize
 		$model =& $this->getModel();
 		$input =& $this->input()->get();
+		$reportForm =& $model->getReportForm();
+		# Renew security token
+		$reportForm->getSecurityToken()->setValue($this->createSecurityToken());
 		# Point to NoReport Template if no report yet defined
 		if (!$model->hasReport()) {
 			$this->mvcTarget()->setLayout('NoReport');	
@@ -74,12 +97,22 @@ class ViewerController extends Controller {
 		# Initialize
 		$model =& $this->getModel();
 		$router =& $this->router();
-		# Delete Reoprt
-		$model->deleteReport();
-		# Generate new reoprt ID
-		$model->generateRID()
-		# Create Report
-		->createReport();
+		$input =& $this->input();
+		$reportForm =& $model->getReportForm();
+		# Check if authorized
+		$reportForm->setValue($input->get()->getArray());
+		if ($reportForm->isAuthorized()) {
+			# Delete Reoprt
+			$model->deleteReport();
+			# Generate new reoprt ID
+			$model->generateRID()
+			# Create Report
+			->createReport();
+		}
+		else {
+			# Not authorized
+			$model->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+		}
 		# Redirect to index
 		$this->redirect($router->routeAction());
 	}
@@ -92,8 +125,18 @@ class ViewerController extends Controller {
 		# INitialize
 		$router =& $this->router();
 		$model =& $this->getModel();
-		# Update Report
-		$model->updateReport();
+		$input =& $this->input();
+		$reportForm =& $model->getReportForm();
+		# Check if authorized
+		$reportForm->setValue($input->get()->getArray());
+		if ($reportForm->isAuthorized()) {
+			# Update Report
+			$model->updateReport();
+		}
+		else {
+			# Not authorized
+			$model->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
+		}
 		# Go to index
 		$this->redirect($router->routeAction());
 	}

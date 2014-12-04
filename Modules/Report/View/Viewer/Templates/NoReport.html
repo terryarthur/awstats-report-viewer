@@ -8,12 +8,25 @@ defined('ABSPATH') or die(ARV\NO_DIRECT_ACCESS_MESSAGE);
 	
 # Getting model
 $model =& $this->result();
+$reportForm =& $model->getReportForm();
 $router =& $this->router();
 ?>
+<style type="text/css">
+	ul#installations-errors {color: red;background-color: white;height: 68px;overflow: auto;padding: 10px 0px 0 30px;width: 96%;}
+	ul#installations-errors li {list-style-type: square;}
+</style>
 <style type="text/css">
 	div#arv-report-viewer-toolbox {margin-top: 13px;}
 	div#arv-report-viewer-toolbox p {font-size: 15px; font-weight: bold;}
 </style>
+<?php if ($model->hasErrors()) : ?>
+	<ul id="installations-errors">
+<?php foreach ($model->getCleanErrors() as $errorMessage) : ?>
+		<li><?php echo $errorMessage; ?></li>
+<?php endforeach; ?>
+	</ul>
+<?php $model->writeState(); # Re-write state as this is running too late! ?>
+<?php endif; ?>
 <div id="arv-report-viewer-toolbox">
 	<p>This page is displayed when there is no report created/generated yet.</p>
 	<p>The report has been deleted by Website admin and still not created a new one.</p>
@@ -28,5 +41,6 @@ $router =& $this->router();
 		<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endforeach; ?>
 		<input id="create-report" type="submit" name="arvaction" value="Create" />
+		<input type="hidden" name="reportForm[<?php echo $reportForm->getSecurityTokenName() ?>]" value="<?php echo $reportForm->getSecurityToken()->getValue() ?>" />
 	</form>
 </div>
