@@ -55,11 +55,6 @@ class InstallerController extends Controller {
 		$installerModel =& $this->getModel();
 		# Initial discover or user submission discover
 		if (!$input->isPost()) {
-			# Re-new Form security tokens
-			$securityToken = $this->createSecurityToken();
-			$discoverForm->getSecurityToken()->setValue($securityToken);
-			$installationForm->getSecurityToken()->setValue($securityToken);
-			$resetForm->getSecurityToken()->setValue($securityToken);
 			# Set Model Discover parameters if not yet set
 			if (!$installerModel->isReady()) {
 				# Set default data
@@ -114,6 +109,11 @@ class InstallerController extends Controller {
 				$installerModel->addError('Not authorized to take such an action!! If you believe this is not true please refresh your page and try again.');
 			}
 		}
+		# Re-new Form security tokens
+		$securityToken = $this->createSecurityToken();
+		$discoverForm->getSecurityToken()->setValue($securityToken);
+		$installationForm->getSecurityToken()->setValue($securityToken);
+		$resetForm->getSecurityToken()->setValue($securityToken);
 		# Pass Discover form to view
 		return (object) array(
 			'discoverForm' => $discoverForm, 
