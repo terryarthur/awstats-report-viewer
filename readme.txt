@@ -4,7 +4,7 @@ Donate link: http://wp-arv.xptrdev.com
 Tags: access logs, Apache log, cpanel, logs, analytics, awstats, report, statistics, visitors, browsers, ips, os, hosts, robots, keywords
 Requires at least: 3.0.1
 Tested up to: 4.1
-Stable tag: 0.6
+Stable tag: 0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,8 @@ ARV to re-genarate all the exists Unique Ids.
 2. Report Screen
 
 == Changelog ==
+= 0.7 =
+* Security improvement
 
 = 0.6 =
 * Framework updates
